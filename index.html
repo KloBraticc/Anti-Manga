@@ -238,7 +238,7 @@
             }
 
                 #pages img:hover {
-                    transform: scale(1.75);
+                    transform: scale(2.4);
                     z-index: 4;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
                     filter: brightness(1.05);
@@ -396,7 +396,7 @@
 
         <label for="zoomToggle" style="display: block; margin-bottom: 0.5em;">
             <input type="checkbox" id="zoomToggle" checked />
-            Enable Zoom On Manga Images
+            Enable Super Zoom!
         </label>
 
         <button id="fullscreenToggle" aria-label="Toggle fullscreen mode" style="margin-bottom: 1em;">
@@ -418,7 +418,7 @@
 
 
     <script>
-        const CORS_PROXY = '';
+        const CORS_PROXY = 'https://corsproxy.io/?';
         let coverMap = {};
 
         const searchForm = document.getElementById('searchForm');
@@ -470,8 +470,8 @@
             mangaList.forEach(manga => {
                 const mangaId = manga.id;
                 const titles = manga.attributes?.title || {};
-                const title = titles?.['ja-ro'] || Object.values(titles || {})[0] || 'Untitled';
-                
+                const title = titles?.en || titles?.['ja-ro'] || Object.values(titles || {})[0] || 'Untitled';
+
                 const coverRel = manga.relationships?.find(r => r.type === 'cover_art');
                 const coverFile = coverRel?.attributes?.fileName || 'cover.jpg';
 
@@ -627,58 +627,58 @@
             }
         }
 
-        async function loadChapterPages(chapterId) {
-            pagesDiv.innerHTML = '<div class="loader"></div>';
+async function loadChapterPages(chapterId) {
+    if (!chapterId) {
+        console.error('No chapter ID provided');
+        return;
+    }
 
-            try {
-                const response = await fetch(`${CORS_PROXY}https://api.mangadex.org/at-home/server/${chapterId}`);
-                if (!response.ok) throw new Error('Network response was not ok');
+    pagesDiv.innerHTML = '<div class="loader"></div>';
 
-                const data = await response.json();
+    try {
+        const response = await fetch(`${CORS_PROXY}https://api.mangadex.org/at-home/server/${chapterId}`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-                const baseUrl = data.baseUrl;
-                const chapter = data.chapter;
+        const { baseUrl, chapter } = await response.json();
 
-                if (!chapter) throw new Error('Chapter data missing in response');
-                if (!Array.isArray(chapter.data) || chapter.data.length === 0) {
-                    throw new Error('No page data available for this chapter');
-                }
-                if (!chapter.hash) throw new Error('Chapter hash is missing');
-
-                pagesDiv.innerHTML = '';
-
-                // Add zoom class toggle
-                if (zoomToggle?.checked) {
-                    pagesDiv.classList.add('zoom');
-                } else {
-                    pagesDiv.classList.remove('zoom');
-                }
-
-                chapter.data.forEach(filename => {
-                    if (!filename) return;
-
-                    const img = document.createElement('img');
-                    img.loading = 'lazy';
-                    img.alt = 'Manga page';
-                    img.src = `${baseUrl}/data/${chapter.hash}/${filename}`;
-
-                    img.onerror = () => {
-                        img.onerror = null;
-                        img.src = 'https://via.placeholder.com/800x1200?text=No+Image';
-                    };
-
-                    img.style.cursor = zoomToggle.checked ? 'zoom-in' : '';
-
-                    pagesDiv.appendChild(img);
-                });
-
-                pagesDiv.scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                console.error('Failed to load chapter pages:', error);
-                pagesDiv.innerHTML = '<p class="error">Could not load this Chapter/Not available anymore!.</p>';
-            }
+        if (!chapter || !Array.isArray(chapter.data) || chapter.data.length === 0 || !chapter.hash) {
+            throw new Error('Invalid or missing chapter data');
         }
+
+        // Prepare new content
+        const fragment = document.createDocumentFragment();
+        const zoomEnabled = zoomToggle?.checked ?? false;
+
+        chapter.data.forEach(filename => {
+            if (!filename) return;
+
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.alt = 'Manga page';
+            img.src = `${baseUrl}/data/${chapter.hash}/${filename}`;
+            img.style.cursor = zoomEnabled ? 'zoom-in' : '';
+
+            img.onerror = () => {
+                img.onerror = null;
+                img.src = 'https://via.placeholder.com/800x1200?text=Image+Unavailable';
+            };
+
+            fragment.appendChild(img);
+        });
+
+        // Update zoom class
+        pagesDiv.classList.toggle('zoom', zoomEnabled);
+
+        // Update content
+        pagesDiv.innerHTML = '';
+        pagesDiv.appendChild(fragment);
+        pagesDiv.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('Failed to load chapter pages:', error);
+        pagesDiv.innerHTML = '<p class="error">Could not load this chapter. It may be unavailable.</p>';
+    }
+}
 
 
         function toggleSettings(open) {
@@ -686,29 +686,28 @@
             settingsOverlay.style.display = open ? 'block' : 'none';
         }
 
-        // Fullscreen toggle handler
-        fullscreenToggle.onclick = () => {
-            if (!document.fullscreenElement) {
-                mangaViewer.requestFullscreen().then(() => {
-                    fullscreenToggle.textContent = 'Exit Fullscreen';
-                }).catch(err => {
-                    alert(`Error attempting to enable fullscreen mode: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen().then(() => {
-                    fullscreenToggle.textContent = 'Enter Fullscreen';
-                });
-            }
-        };
-
-        // Also update button text on fullscreen change (e.g. if user presses ESC)
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement === mangaViewer) {
-                fullscreenToggle.textContent = 'Exit Fullscreen';
-            } else {
-                fullscreenToggle.textContent = 'Enter Fullscreen';
-            }
+// Fullscreen toggle handler
+fullscreenToggle.onclick = () => {
+    if (!document.fullscreenElement) {
+        mangaViewer.requestFullscreen().catch(err => {
+            alert(`Error attempting to enable fullscreen mode: ${err.message}`);
         });
+    } else {
+        document.exitFullscreen().catch(err => {
+            alert(`Error attempting to exit fullscreen mode: ${err.message}`);
+        });
+    }
+};
+
+// Update button text on fullscreen change (e.g. ESC pressed or toggle)
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement === mangaViewer) {
+        fullscreenToggle.textContent = 'Exit Fullscreen';
+    } else {
+        fullscreenToggle.textContent = 'Enter Fullscreen';
+    }
+});
+
 
         searchForm.onsubmit = e => { e.preventDefault(); searchManga(); };
         settingsBtn.onclick = () => toggleSettings(true);
