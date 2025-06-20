@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Anti Manga - Anime Manga!" />
+    <meta property="og:description" content="Read the best Manga for FREE on Anti Manga!" />
+    <meta property="og:url" content="https://fflagtracker.netlify.app" />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#007bff" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Anti Manga - Anime Manga!" />
+    <meta name="twitter:description" content="Read the best Manga for FREE on Anti Manga!" />
+    <link rel="icon" href="assets/Icon.jpg" type="image/x-icon">
+    <title>Anti Manga</title>
+    <style>
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            border: 2px solid Gray;
+            transition: background-color 0.3s ease;
+            will-change: background-color;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background-color: #e5e7eb;
+            }
+
+            ::-webkit-scrollbar-thumb:active {
+                background-color: #d1d5db;
+            }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-light: #121212;
+            --text-light: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --card-shadow: rgba(0, 0, 0, 0.7);
+            --accent: #3399ff;
+            --zoom-scale: 1.5;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        header {
+            background: var(--card-bg);
+            box-shadow: 0 2px 6px var(--card-shadow);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            header h1 {
+                margin: 0;
+                font-weight: 700;
+                font-size: 1.5rem;
+                color: var(--accent);
+                cursor: default;
+            }
+
+        #searchForm {
+            flex-grow: 1;
+            margin-left: 1rem;
+            max-width: 1000px;
+            display: flex;
+        }
+
+        #searchBox {
+            flex-grow: 1;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--accent);
+            border-radius: 4px 0 0 4px;
+            outline-offset: 2px;
+            color: var(--text-light);
+            background: var(--card-bg);
+        }
+
+        #searchBtn, #settingsBtn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            margin-left: 1rem;
+        }
+
+            #searchBtn:hover, #settingsBtn:hover {
+                background: #004080;
+            }
+
+        main {
+            flex-grow: 1;
+            padding: 1rem 2rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.25rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* increased min width */
+            gap: 1rem;
+            align-items: start; /* ensures card heights align at the top */
+        }
+
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 6px var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            outline-offset: 3px;
+            transition: transform 0.15s ease;
+        }
+
+            .card:focus, .card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 4px 12px var(--card-shadow);
+            }
+
+            .card img {
+                width: 100%;
+                border-radius: 8px 8px 0 0;
+                object-fit: cover;
+                aspect-ratio: 3/4;
+            }
+
+            .card h3 {
+                margin: 0.5rem 0 0.75rem;
+                font-size: 1rem;
+                padding: 0 0.5rem;
+                text-align: center;
+                color: var(--accent);
+                flex-grow: 1;
+            }
+
+            .card button {
+                margin: 0 0.5rem 0.75rem;
+                padding: 0.5rem;
+                border: none;
+                background: var(--accent);
+                color: white;
+                font-weight: 600;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+                .card button:hover {
+                    background: #004080;
+                }
+
+        .chapter-item {
+            background: var(--card-bg);
+            box-shadow: 0 2px 6px var(--card-shadow);
+            border-radius: 6px;
+            width: 150px;
+            cursor: pointer;
+            outline-offset: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.15s ease;
+        }
+
+            .chapter-item:hover, .chapter-item:focus {
+                transform: translateY(-4px);
+                box-shadow: 0 4px 12px var(--card-shadow);
+            }
+
+            .chapter-item img {
+                width: 100%;
+                border-radius: 6px 6px 0 0;
+                aspect-ratio: 3/4;
+                object-fit: cover;
+            }
+
+            .chapter-item .label {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+                text-align: center;
+                color: var(--accent);
+            }
+
+        #pages {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            #pages img {
+                max-width: 80%;
+                max-height: 450px;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 6px var(--card-shadow);
+                border-radius: 8px;
+                object-fit: contain;
+                cursor: zoom-in;
+                transition: transform 0.3s ease;
+            }
+
+                #pages img:hover {
+                    transform: scale(1.65);
+                    z-index: 4;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                    filter: brightness(1.05);
+                    filter: drop-shadow(1.20)
+                }
+
+            #pages.zoom img {
+                transition: transform 0.3s ease;
+                cursor: zoom-in;
+            }
+
+                #pages.zoom img:hover {
+                    transform: scale(var(--zoom-scale));
+                    z-index: 4;
+                    position: relative;
+                    cursor: zoom-out;
+                }
+
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading, .error {
+            font-style: italic;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        #resultsSection, #mangaViewer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            padding-top: 1rem;
+        }
+
+        #settingsPanel {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: var(--card-bg);
+            box-shadow: 0 4px 12px var(--card-shadow);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            width: 280px;
+            z-index: 1000;
+            display: none;
+        }
+
+        #homeBtn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+            margin-left: 1rem;
+        }
+
+            #homeBtn:hover {
+                background: #004080;
+            }
+
+
+        #settingsOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            z-index: 999;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-wrap: wrap;
+            }
+
+            #searchForm {
+                margin: 0.5rem 0 0 0;
+                width: 100%;
+            }
+
+            #pages img {
+                max-height: 400px;
+            }
+
+            #settingsPanel {
+                width: 90%;
+                right: 5%;
+                top: 50px;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid #ccc;">
+        <h1 style="margin: 0;">Anti Manga</h1>
+
+        <form id="searchForm" role="search" aria-label="Search manga" style="display: flex; gap: 0.5rem; flex-grow: 1; max-width: 1000px;">
+            <input type="search" id="searchBox" placeholder="Search manga by title..." autocomplete="off" required style="flex-grow: 1; padding: 0.5rem;" />
+            <button type="submit" id="searchBtn" style="padding: 0.5rem 1rem;">Search</button>
+        </form>
+
+        <div style="display: flex; gap: 0.5rem;">
+            <button id="homeBtn" style="padding: 0.5rem 1rem;">Home 🏠</button>
+            <button id="settingsBtn" style="padding: 0.5rem 1rem;">Settings ⚙️</button>
+        </div>
+    </header>
+
+
+    <main>
+        <section id="homeSection" aria-label="Homepage manga lists">
+            <section>
+                <h2 class="section-title">Top Popular Manga</h2>
+                <div id="popularManga" class="cards-grid" aria-live="polite"></div>
+            </section>
+            <section>
+                <h2 class="section-title">Latest Updated Manga</h2>
+                <div id="latestManga" class="cards-grid" aria-live="polite"></div>
+            </section>
+        </section>
+
+        <section id="resultsSection" aria-label="Search results" tabindex="-1"></section>
+
+        <section id="mangaViewer" aria-label="Anti Manga" tabindex="-1">
+            <h2 id="mangaTitle"></h2>
+            <div id="chapters"></div>
+            <div id="pages"></div>
+        </section>
+    </main>
+
+    <div id="settingsPanel" role="dialog" aria-modal="true">
+        <h3>Settings</h3>
+        <label><input type="checkbox" id="zoomToggle" checked /> Enable Zoom On Manga Images</label>
+    </div>
+    <div id="settingsOverlay"></div>
+
+
+    <script>
+        const CORS_PROXY = 'https://corsproxy.io/?';
+        let coverMap = {};
+
+        const searchForm = document.getElementById('searchForm');
+        const searchBox = document.getElementById('searchBox');
+        const homeSection = document.getElementById('homeSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const chaptersDiv = document.getElementById('chapters');
+        const pagesDiv = document.getElementById('pages');
+        const mangaViewer = document.getElementById('mangaViewer');
+        const mangaTitle = document.getElementById('mangaTitle');
+        const popularMangaDiv = document.getElementById('popularManga');
+        const latestMangaDiv = document.getElementById('latestManga');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const zoomToggle = document.getElementById('zoomToggle');
+
+        async function fetchJSON(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            } catch (err) {
+                console.error('Fetch error:', err);
+                throw err;
+            }
+        }
+
+        function renderMangaCards(container, mangaList) {
+            container.innerHTML = '';
+
+            if (!Array.isArray(mangaList) || mangaList.length === 0) {
+                container.innerHTML = '<p class="error">No manga found.</p>';
+                return;
+            }
+
+            mangaList.forEach(manga => {
+                const mangaId = manga.id;
+                const titles = manga.attributes?.title || {};
+                const title = titles.en || titles['ja-ro'] || 'Untitled';
+
+                const coverRel = manga.relationships?.find(r => r.type === 'cover_art');
+                const coverFile = coverRel?.attributes?.fileName || 'cover.jpg';
+
+                // Assuming coverMap is declared in outer scope
+                coverMap[mangaId] = coverFile;
+
+                const coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${coverFile}`;
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                card.setAttribute('aria-label', `Open manga titled ${title}`);
+
+                card.innerHTML = `
+              <img src="${coverUrl}" alt="Cover of ${title}" loading="lazy"
+                onerror="this.onerror=null;this.src='https://via.placeholder.com/160x213?text=No+Image';" />
+              <h3>${title}</h3>
+              <button type="button" aria-label="Read ${title}">Read</button>
+            `;
+
+                const openSig = () => openManga(mangaId, title);
+
+                const btn = card.querySelector('button');
+                btn.onclick = openSig;
+
+                card.onclick = e => {
+                    // Prevent button click event from triggering twice
+                    if (e.target !== btn) openSig();
+                };
+
+                card.onkeypress = e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openSig();
+                    }
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+
+        async function loadPopularManga() {
+            popularMangaDiv.innerHTML = '<div class="loader"></div>';
+            try {
+                const data = await fetchJSON(
+                    `${CORS_PROXY}https://api.mangadex.org/manga?order[followedCount]=desc&limit=30&includes[]=cover_art&contentRating[]=safe&contentRating[]=suggestive`
+                );
+                renderMangaCards(popularMangaDiv, data.data);
+            } catch {
+                popularMangaDiv.innerHTML = '<p class="error">Failed to load popular manga.</p>';
+            }
+        }
+
+        async function loadLatestManga() {
+            latestMangaDiv.innerHTML = '<div class="loader"></div>';
+
+            try {
+                const response = await fetchJSON(
+                    `${CORS_PROXY}https://api.mangadex.org/manga?order[updatedAt]=desc&limit=30&includes[]=cover_art&contentRating[]=safe&contentRating[]=suggestive`
+                );
+
+                if (response && Array.isArray(response.data) && response.data.length > 0) {
+                    renderMangaCards(latestMangaDiv, response.data);
+                } else {
+                    latestMangaDiv.innerHTML = '<p class="error">No manga found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading latest manga:', error);
+                latestMangaDiv.innerHTML = '<p class="error">Failed to load latest manga.</p>';
+            }
+        }
+
+
+        async function searchManga() {
+            const q = encodeURIComponent(searchBox.value.trim());
+            if (!q) return;
+            resultsSection.innerHTML = '<div class="loader"></div>';
+            resultsSection.style.display = 'block';
+            homeSection.style.display = 'none';
+            mangaViewer.style.display = 'none';
+            try {
+                const data = await fetchJSON(`${CORS_PROXY}https://api.mangadex.org/manga?title=${q}&limit=30&includes[]=cover_art&contentRating[]=safe&contentRating[]=suggestive`);
+                renderMangaCards(resultsSection, data.data);
+                resultsSection.focus();
+            } catch {
+                resultsSection.innerHTML = '<p class="error">Failed to fetch search results.</p>';
+            }
+        }
+
+        async function openManga(mangaId, title) {
+            mangaTitle.textContent = title;
+            chaptersDiv.innerHTML = '<div class="loader"></div>';
+            pagesDiv.innerHTML = '';
+            mangaViewer.style.display = 'block';
+            resultsSection.style.display = 'none';
+            homeSection.style.display = 'none';
+
+            try {
+                const data = await fetchJSON(`${CORS_PROXY}https://api.mangadex.org/manga/${mangaId}/aggregate`);
+                const volumes = data.volumes || {};
+                let chaptersArr = [];
+
+                for (const volKey in volumes) {
+                    const vol = volumes[volKey];
+                    for (const chKey in vol.chapters) {
+                        const ch = vol.chapters[chKey];
+                        // Skip invalid chapter keys (like '0' or empty)
+                        if (!chKey || chKey === '0') continue;
+                        chaptersArr.push({
+                            id: ch.id,
+                            title: (ch.title && ch.title.trim()) || `Ch ${chKey}`,
+                            hash: ch.hash
+                        });
+                    }
+                }
+
+                if (chaptersArr.length === 0) {
+                    chaptersDiv.innerHTML = '<p class="error">No chapters found.</p>';
+                    return;
+                }
+
+                chaptersArr.sort((a, b) => {
+                    const numA = parseFloat(a.title.match(/\d+(\.\d+)?/)?.[0] || 0);
+                    const numB = parseFloat(b.title.match(/\d+(\.\d+)?/)?.[0] || 0);
+                    return numA - numB;
+                });
+
+                chaptersDiv.innerHTML = '';
+                chaptersArr.forEach(chap => {
+                    const div = document.createElement('div');
+                    div.className = 'chapter-item';
+                    div.tabIndex = 0;
+                    div.setAttribute('role', 'button');
+                    div.innerHTML = `
+                        <img src="https://uploads.mangadex.org/covers/${mangaId}/${coverMap[mangaId] || 'cover.jpg'}" alt="Cover" />
+                        <div class="label">${chap.title}</div>
+                    `;
+                    div.onclick = () => loadChapterPages(chap.id);
+                    div.onkeypress = e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            loadChapterPages(chap.id);
+                        }
+                    };
+                    chaptersDiv.appendChild(div);
+                });
+
+                mangaViewer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error loading manga chapters:', error);
+                chaptersDiv.innerHTML = '<p class="error">Failed to load chapters.</p>';
+            }
+        }
+        async function loadChapterPages(chapterId) {
+            pagesDiv.innerHTML = '<div class="loader"></div>';
+
+            try {
+                const response = await fetch(`${CORS_PROXY}https://api.mangadex.org/at-home/server/${chapterId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+                console.log('API response data:', data);
+
+                const baseUrl = data.baseUrl;
+                const chapter = data.chapter;
+
+                if (!chapter) throw new Error('Chapter data missing in response');
+                if (!Array.isArray(chapter.data) || chapter.data.length === 0) {
+                    throw new Error('No page data available for this chapter');
+                }
+                if (!chapter.hash) throw new Error('Chapter hash is missing');
+
+                pagesDiv.innerHTML = '';
+
+                if (zoomToggle?.checked) {
+                    pagesDiv.classList.add('zoom');
+                } else {
+                    pagesDiv.classList.remove('zoom');
+                }
+
+                chapter.data.forEach(filename => {
+                    if (!filename) {
+                        console.warn('Skipping empty filename in chapter data');
+                        return;
+                    }
+
+                    const img = document.createElement('img');
+                    img.loading = 'lazy';
+                    img.alt = 'Manga page';
+                    img.src = `${baseUrl}/data/${chapter.hash}/${filename}`;
+
+                    img.onerror = () => {
+                        img.onerror = null;
+                        console.warn(`Failed to load image: ${img.src}`);
+                        img.src = 'https://via.placeholder.com/800x1200?text=No+Image';
+                    };
+
+                    pagesDiv.appendChild(img);
+                });
+
+                pagesDiv.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Failed to load chapter pages:', error);
+                pagesDiv.innerHTML = '<p class="error">Could not load this Chapter/Not available anymore!.</p>';
+            }
+        }
+
+        function toggleSettings(open) {
+            settingsPanel.style.display = open ? 'block' : 'none';
+            settingsOverlay.style.display = open ? 'block' : 'none';
+        }
+
+        // Events
+        searchForm.onsubmit = e => { e.preventDefault(); searchManga(); };
+        settingsBtn.onclick = () => toggleSettings(true);
+        homeBtn.onclick = () => {
+            homeSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            mangaViewer.style.display = 'none';
+            searchBox.value = '';
+        };
+
+        settingsOverlay.onclick = () => toggleSettings(false);
+        zoomToggle.onchange = () => {
+            [...pagesDiv.querySelectorAll('img')].forEach(img => {
+                img.style.transform = '';
+                img.style.zIndex = '';
+                img.style.position = '';
+                img.style.cursor = zoomToggle.checked ? 'zoom-in' : '';
+            });
+        };
+
+        // Initial load
+        loadPopularManga();
+        loadLatestManga();
+    </script>
+
+    <footer aria-label="Site licensing information" style="
+    background: var(--card-bg);
+    box-shadow: 0 -2px 6px var(--card-shadow);
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-top: auto;
+">
+        <p>
+            &copy; 2025 Anti Manga. All rights reserved. &nbsp;|&nbsp;
+            Content provided for personal use only. &nbsp;|&nbsp;
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: underline;">
+                CC BY-NC-SA 4.0 License
+            </a>
+        </p>
+    </footer>
+
+
+</body>
+</html>
