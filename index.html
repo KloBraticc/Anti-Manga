@@ -470,8 +470,8 @@
             mangaList.forEach(manga => {
                 const mangaId = manga.id;
                 const titles = manga.attributes?.title || {};
-                const title = titles?.en || titles?.['ja-ro'] || Object.values(titles || {})[0] || 'Untitled';
-
+                const title = titles?.['ja-ro'] || Object.values(titles || {})[0] || 'Untitled';
+                
                 const coverRel = manga.relationships?.find(r => r.type === 'cover_art');
                 const coverFile = coverRel?.attributes?.fileName || 'cover.jpg';
 
